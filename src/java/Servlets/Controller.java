@@ -73,32 +73,40 @@ public class Controller extends HttpServlet {
         if ("catalogue".equals(request.getParameter("section"))) {
             url = "/WEB-INF/Catalogue.jsp";
         }
+        Livre monLivre = (Livre) request.getAttribute("livre");
         LigneCommande maLigne = (LigneCommande) request.getAttribute("ligne");
         Commande panier = (Commande) session.getAttribute("panier");
         BeanCatalogue catalogue = (BeanCatalogue) request.getAttribute("catalogue");
+        if (monLivre == null) {
+            monLivre = new Livre();
+            request.setAttribute("livre", monLivre);
+        }
+        if (maLigne == null) {
+            maLigne = new LigneCommande();
+            request.setAttribute("ligneCommande", maLigne);
+        }
         if (panier == null) {
             panier = new Commande();
             session.setAttribute("panier", panier);
         }
-        
-        LigneCommande lc = new LigneCommande();
-        Livre l = new Livre(request.getParameter("add"), con);
-        System.out.println("l = " + l);
-        lc.add(l);
-        panier.add(lc);
-        System.out.println("isbn = " + request.getParameter("add"));
-        System.out.println("panier = " + panier);
-        Livre monLivre = new Livre(request.getParameter("add"), con);
 
-        
+        if (request.getParameter("add") != null) {
+            monLivre = new Livre(request.getParameter("add"), con);
+            maLigne.add(monLivre);
+            panier.add(maLigne);
+            System.out.println("isbn = " + request.getParameter("add"));
+            System.out.println("panier = " + panier.getLigneCommande(request.getParameter("add")));
+            
+        }
+
         if ("panier".equals(request.getParameter("section"))) {
             url = "/WEB-INF/Panier.jsp";
-            
+
         }
         if (request.getParameter("panierbutton") != null) {
             url = "/WEB-INF/Panier.jsp";
         }
-        
+
         if ("paiement".equals(request.getParameter("section"))) {
             url = "/WEB-INF/Paiement.jsp";
         }
@@ -138,8 +146,7 @@ public class Controller extends HttpServlet {
 
         //-----------------------FIN JULIEN------------//
         //-----------------------YAVUZ------------//
-        url = "/WEB-INF/index.jsp";
-
+        //url = "/WEB-INF/index.jsp";
 //        if (request.getParameter("search") != null) {
 //            url = "/WEB-INF/search.jsp";
 //
@@ -181,7 +188,7 @@ public class Controller extends HttpServlet {
             request.setAttribute("search", sr.getSearch());
 
         }
-        
+
         //  CONECTION CLIENT :::::////////
         if (request.getParameter("connection") != null) {
             url = "/WEB-INF/connection.jsp";
@@ -237,7 +244,7 @@ public class Controller extends HttpServlet {
         }
 
         return connexion;
-        
+
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
