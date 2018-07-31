@@ -1,0 +1,85 @@
+.menuBottom{
+    text-align: center;
+    height: 50px;
+    border-width: 2px;
+    border-style: solid;
+    border-color: black;
+    background-color: bisque;
+    width: 850px;
+    margin-left: auto;
+    margin-right: auto;
+}
+.menuBottom ul li a{
+    text-decoration: none;
+}
+.menuBottom > ul{
+    display: inline-block;
+}
+.lien1 > li{
+    display: block;
+    position: relative;
+    text-align: left;
+}
+.lien2 > li{
+    margin-left: 70px;
+    margin-right: 70px;
+    display: block;
+    position: relative;
+    text-align: left;
+}
+.lien3 > li{
+    display: block;
+    position: relative;
+    text-align: left;
+}
+.menuHeader {
+    height: 150px;
+    border-width: 2px;
+    border-style: solid;
+    border-color: black;
+    width: 850px;
+    margin-left: auto;
+    margin-right: auto;
+}
+.menuHeader form{
+    display: inline-block;
+    text-align: right;
+}
+.boutonCompte {
+    position: absolute;
+    z-index: 1;
+    margin-left: 270px;
+    margin-top: -80px;
+    text-align: right;
+    background-color: #00BCD4;
+    
+}
+.boutonCreerCompte{
+    position : absolute;
+    background-color: #00BCD4;
+    margin-left: 315px;
+    margin-top: -80px;
+    
+}
+.imgHeader{
+    position: relative;
+    z-index: 0;
+    text-align: left;
+    margin-left: -40px;
+}
+.boutonPanier{
+    position: absolute;
+    background-color: #00BCD4;
+    margin-left: 373px;
+    margin-top: -73px;
+    
+}
+.compteurPanier{
+    position: absolute;
+    background-color: #d46200;
+    margin-left: 803px;
+    margin-top: -165px;
+    border-style:solid;
+    border-width: 2px;
+    border-color:#ff006a70;
+}
