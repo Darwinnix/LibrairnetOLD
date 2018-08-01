@@ -13,6 +13,7 @@ import Beans.Connexion;
 import Beans.LigneCommande;
 import Beans.Livre;
 import Beans.Search;
+import Classes.LibExceptions;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -57,14 +58,13 @@ public class Controller extends HttpServlet {
             ServletContext application = this.getServletContext();
             application.setAttribute("connection", con);
         }
-        //BEAN CONNEXION
+        
         ServletContext application = this.getServletContext();
         BeanConnexion bcApplication = (BeanConnexion) application.getAttribute("beanApplication");
         if (bcApplication == null) {
             bcApplication = new BeanConnexion();
             application.setAttribute("beanApplication", bcApplication);
         }
-        //----------------------------------------------------------------------
 
         //----------JULIEN-------------------//
         String url = "/WEB-INF/index.jsp";
@@ -93,7 +93,10 @@ public class Controller extends HttpServlet {
         if (request.getParameter("add") != null) {
             monLivre = new Livre(request.getParameter("add"), con);
             maLigne.add(monLivre);
+            //maLigne = new LigneCommande(request.getParameter("livre"), monLivre.getPrix(), monLivre.getEvt().getEveRemise(), monLivre.getTaux().getTva());
             panier.add(maLigne);
+            session.setAttribute("panier", panier);
+            System.out.println(session.getAttribute("panier"));
             System.out.println("isbn = " + request.getParameter("add"));
             System.out.println("panier = " + panier.getLigneCommande(request.getParameter("add")));
             
@@ -101,22 +104,20 @@ public class Controller extends HttpServlet {
 
         if ("panier".equals(request.getParameter("section"))) {
             url = "/WEB-INF/Panier.jsp";
-
-        }
-        if (request.getParameter("panierbutton") != null) {
-            url = "/WEB-INF/Panier.jsp";
         }
 
         if ("paiement".equals(request.getParameter("section"))) {
             url = "/WEB-INF/Paiement.jsp";
         }
-        if (request.getParameter("ajout") != null) {
-            monLivre = catalogue.getLivre(request.getParameter("livre"));
-            maLigne = new LigneCommande(request.getParameter("livre"), monLivre.getPrix(), monLivre.getEvt().getEveRemise(), monLivre.getTaux().getTva());
-            maLigne.setMonLivre(monLivre);
-            panier.add(maLigne);
-
-        }
+//        if (request.getParameter("add") != null) {
+//            Livre liv = new Livre(request.getParameter("add"), con);
+//            
+//            monLivre = Search.getLivre(request.getParameter("livre"));
+//            maLigne = new LigneCommande(request.getParameter("livre"), monLivre.getPrix(), monLivre.getEvt().getEveRemise(), monLivre.getTaux().getTva());
+//            maLigne.setMonLivre(monLivre);
+//            panier.add(maLigne);
+//
+//        }
         if (request.getParameter("plus") != null) {
             maLigne = panier.getLigneCommande(request.getParameter("isbnLigne"));
             panier.add(maLigne);
@@ -189,32 +190,190 @@ public class Controller extends HttpServlet {
 
         }
 
-        //  CONECTION CLIENT :::::////////
-        if (request.getParameter("connection") != null) {
-            url = "/WEB-INF/connection.jsp";
-        }
-
-        if (request.getParameter("connecter") != null) {
-            url = "/WEB-INF/index.jsp";
-            session.setAttribute("isconnect", false);
-            Client client = (Client) session.getAttribute("client");
-            if (client == null) {
-                client = new Client(request.getParameter("login"), request.getParameter("password"), con);
-
-            }
-            if (client.isConnected()) {
-                session.setAttribute("client", client);
-                session.setAttribute("isconnected", client.isConnected());
-            }
-        }
-
-        if (request.getParameter("deconnection") != null) {
-            url = "/WEB-INF/index.jsp";
-            session.removeAttribute("client");
-            session.setAttribute("isconnected", false);
-        }
+//        //  CONNECTION CLIENT :::::////////
+//        if (request.getParameter("connection") != null) {
+//            url = "/WEB-INF/connection.jsp";
+//        }
+//        if (request.getParameter("connecter") != null) {
+//            url = "/WEB-INF/index.jsp";
+//            session.setAttribute("isconnect", false);
+//            Client client = (Client) session.getAttribute("client");
+//            if (client == null) {
+//                client = new Client(request.getParameter("login"), request.getParameter("password"), con);
+//
+//            }
+//            if (client.isConnected()) {
+//                session.setAttribute("client", client);
+//                session.setAttribute("isconnected", client.isConnected());
+//            }
+//        }
+//        if (request.getParameter("deconnection") != null) {
+//            url = "/WEB-INF/index.jsp";
+//            session.removeAttribute("client");
+//            session.setAttribute("isconnected", false);
+//        }
 
         //-----------------------FIN YAVUZ------------//
+        //-----------------------MOMO-----------------//
+        String password = request.getParameter("password");
+            Connection conect = getinstance();
+            int i = 1;
+            int k = 0;
+            Client cl1 = new Client();
+//            int i = cl.LoginValide(login,password, conect);
+            String message = null;
+            String welcome = null;
+            String fatalerror = null;
+            String login = "";  
+            if(login!= null && password != null){
+             i = cl1.LoginValide(request.getParameter("login"),request.getParameter("password"), conect);
+                 session.setAttribute("client", cl1);
+            }
+//            Beans.Singleton.getinstance();
+//            Cookie cccc = getCookie(request.getCookies(), "try");
+//        if ("login".equals(request.getParameter("section"))) {
+
+            if(request.getParameter("doIt")!=null){
+               
+             if (i == 0) {
+                    url = "/WEB-INF/jspWelcome.jsp";
+                     welcome = request.getParameter("login");
+                    request.setAttribute("welcome", welcome);
+                    Cookie c = new Cookie("login", welcome);
+                    response.addCookie(c);
+                    c = new Cookie("try", "");
+                    c.setMaxAge(0);
+                    response.addCookie(c);
+            
+             }
+             else{
+                 url = "/WEB-INF/Identification.jsp";
+                    request.setAttribute("user", request.getParameter("login"));
+                    request.setAttribute("message", "Erreur Login /Mot de passe invalide!!!");
+                    Cookie ccc = getCookie(request.getCookies(), "try");
+                    if (ccc == null) {
+                        ccc = new Cookie("try", "*");
+                    } else {
+                        ccc = new Cookie("try", ccc.getValue() + "*");
+                    }
+             
+                    if (ccc.getValue().length() > 3) {
+                        
+                        ccc.setMaxAge(1 * 60);
+                        url = "/WEB-INF/jspFatalError.jsp";
+                        request.setAttribute("fatalerror", "Erreur trop de tentatives de connexion !!!");
+                    }
+                    response.addCookie(ccc); 
+             }
+            }
+              Cookie cc = getCookie(request.getCookies(), "login");
+            if (cc != null) {
+
+            }
+            Cookie cccc = getCookie(request.getCookies(), "try");
+            if (cccc != null) {
+                if (cccc.getValue().length() > 3) {
+
+                    url = "/WEB-INF/jspFatalError.jsp";
+
+                    request.setAttribute("fatalerror", "Erreur trop de tentatives de connexion !!!!");
+                }
+            }
+             if (request.getParameter("deconnect") != null) {
+
+                if (cc != null) {
+                    login = cc.getValue();
+                }
+                cc = new Cookie("login", "");
+                cc.setMaxAge(0);
+                response.addCookie(cc);
+            }
+             if(conect != null){
+            try {
+                        conect.close();
+                    } catch (SQLException ex) {
+                        System.out.println("Oops 4 sql : "+ex.getMessage());
+
+                        
+                    } 
+             }
+             if(request.getParameter("inscription")!=null){
+                 url = "/WEB-INF/Inscription.jsp";
+             }
+             if(request.getParameter("regdoIt")!= null){
+             url = "/WEB-INF/Inscription.jsp";
+                 Client cl = new Client();
+                 String nom = request.getParameter("nom");
+                 try{
+                     cl.setCliNom(nom);
+                     request.setAttribute("nom",nom);
+                     
+                     k++;
+                 }catch(LibExceptions e){
+//                     nom = "<s>"+nom+"</s>";
+//                     request.setAttribute("nom",nom);
+                     request.setAttribute("Nom",e.getMessage());
+             }
+                 String prenom = request.getParameter("prenom");
+                  try{
+                     cl.setCliPrenom(prenom);
+                     request.setAttribute("prenom",prenom);
+                     k++;
+                 }catch(LibExceptions e){
+                     request.setAttribute("Prenom",e.getMessage());
+             }
+                   String bir = request.getParameter("naissance");
+                  try{
+                     cl.setCliNaissance(bir);
+                     request.setAttribute("naissance",bir);
+                     k++;
+                 }catch(LibExceptions e){
+                     request.setAttribute("bir",e.getMessage());
+             }  
+                     String email = request.getParameter("mail");
+                  try{
+                     cl.setCliMail(bir);
+                     request.setAttribute("mail",email);
+                     k++;
+                 }catch(LibExceptions e){
+                     request.setAttribute("email",e.getMessage());
+             } 
+                 String user = request.getParameter("login");
+                  try{
+                     cl.setCliLogin(user);
+                     request.setAttribute("login",user);
+                     k++;
+                 }catch(LibExceptions e){
+                     request.setAttribute("user",e.getMessage());
+             } 
+                     String pass = request.getParameter("pwd");
+                  try{
+                     cl.setCliPwd(pass);
+                     request.setAttribute("pwd",pass);
+                     k++;
+                 }catch(LibExceptions e){
+                     request.setAttribute("Pwd",e.getMessage());
+             } 
+               if(request.getParameter("genre")== null){
+                   request.setAttribute("genre","le Genre est obligatoire.");
+               }
+               else{
+                 try {
+                     cl.setCliGenre(request.getParameter("genre"));
+                     k++;
+                 } catch (LibExceptions ex) {
+                    
+                 }
+               }
+                String confirmation = request.getParameter("confirmation");
+               if(pass.equals(confirmation)&& k==7){
+                   url = "/WEB-INF/jspWelcome.jsp";
+                   
+               }
+             }
+        
+        
+        
         request.getRequestDispatcher(url).include(request, response);
 
     }
