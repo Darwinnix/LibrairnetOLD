@@ -13,14 +13,14 @@ public class LigneCommande implements Serializable{
     private int ligQuantite;
     private float ligRemise;
     private double ligMontantTva;
-    private HashMap<String, Livre> map = null;
+//    private HashMap<String, Livre> map = null;
     private Livre monLivre = new Livre();
     private double prixHT;
     private double prixTTC;
     
     //CONSTRUCTEURS
     public LigneCommande() {
-        this.map = new HashMap<>();
+//        this.map = new HashMap<>();
     }
     
     public LigneCommande(String livIsbn){
@@ -73,17 +73,25 @@ public class LigneCommande implements Serializable{
         this.ligQuantite+= qty;
     }
     
-    public void add(Livre unLivre, int qty) {
-        if (map.containsKey(unLivre.getIsbn())) {
-            unLivre = map.get(unLivre.getIsbn());
-            change(qty);
-        } else {
-            
-            map.put(unLivre.getIsbn(), unLivre);
-            ligQuantite = 1;
-        }
-        if( this.ligQuantite < 1) 
-            delete(unLivre);
+//    public void add(Livre unLivre, int qty) {
+//        if (map.containsKey(unLivre.getIsbn())) {
+//            unLivre = map.get(unLivre.getIsbn());
+//            change(qty);
+//        } else {
+//            map.put(unLivre.getIsbn(), unLivre);
+//            ligQuantite = 1;
+//        }
+//        if( this.ligQuantite < 1) 
+//            delete(unLivre);
+//    }
+    
+    public void add(Livre unLivre, int qty){
+        this.monLivre = unLivre;
+        this.ligQuantite += qty;
+        this.livIsbn = unLivre.getIsbn();
+        this.ligPrix = unLivre.getPrix();
+        this.ligRemise = unLivre.getEvt().getEveRemise();
+        this.ligMontantTva = unLivre.getTaux().getTva();
     }
     
     public void add(Livre unLivre, String qty){
@@ -101,23 +109,23 @@ public class LigneCommande implements Serializable{
     public void less(Livre unLivre, int qty){
         add(unLivre,-qty);
     }
-    public void delete(Livre unLivre){
-        map.remove(unLivre.getIsbn());
-    }
-    public void clear(){
-        map.clear();
-    }
-    public boolean isEmpty(){
-        return map.isEmpty();
-    }
-    
-    public int size(){
-        return map.size();
-    }
-    
-    public Collection getLivres(){
-        return map.values();
-    }
+//    public void delete(Livre unLivre){
+//        map.remove(unLivre.getIsbn());
+//    }
+//    public void clear(){
+//        map.clear();
+//    }
+//    public boolean isEmpty(){
+//        return map.isEmpty();
+//    }
+//    
+//    public int size(){
+//        return map.size();
+//    }
+//    
+//    public Collection getLivres(){
+//        return map.values();
+//    }
     
     //ACCESSEURS
 
@@ -169,13 +177,13 @@ public class LigneCommande implements Serializable{
         this.ligMontantTva = ligMontantTva;
     }
 
-    public HashMap<String, Livre> getMap() {
-        return map;
-    }
-
-    public void setMap(HashMap<String, Livre> map) {
-        this.map = map;
-    }
+//    public HashMap<String, Livre> getMap() {
+//        return map;
+//    }
+//
+//    public void setMap(HashMap<String, Livre> map) {
+//        this.map = map;
+//    }
 
     public Livre getMonLivre() {
         return monLivre;
@@ -189,8 +197,9 @@ public class LigneCommande implements Serializable{
 
     @Override
     public String toString() {
-        return "LigneCommande{" + "ligId=" + ligId + ", livIsbn=" + livIsbn + ", ligPrix=" + ligPrix + ", ligQuantite=" + ligQuantite + ", ligRemise=" + ligRemise + ", ligMontantTva=" + ligMontantTva + ", map=" + map + ", monLivre=" + monLivre + '}';
+        return "LigneCommande{" + "ligId=" + ligId + ", livIsbn=" + livIsbn + ", ligPrix=" + ligPrix + ", ligQuantite=" + ligQuantite + ", ligRemise=" + ligRemise + ", ligMontantTva=" + ligMontantTva + ", monLivre=" + monLivre + ", prixHT=" + prixHT + ", prixTTC=" + prixTTC + '}';
     }
+    
     
     
 

@@ -2,7 +2,6 @@ package Beans;
 
 import Classes.LibExceptions;
 import Classes.mesOutils;
-import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -11,7 +10,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import javax.swing.JOptionPane;
 
-public class Adresse implements Serializable{
+public class Adresse {
 
     private int adrId;
     private String adrNom;
