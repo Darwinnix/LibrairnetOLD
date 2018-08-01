@@ -142,8 +142,8 @@ public class Controller extends HttpServlet {
 
         if (request.getParameter("valider") != null) {
 
-        }
-
+        } 
+       
         //-----------------------FIN JULIEN------------//
         //-----------------------YAVUZ------------//
         //url = "/WEB-INF/index.jsp";
@@ -214,6 +214,7 @@ public class Controller extends HttpServlet {
             session.setAttribute("isconnected", false);
         }
 
+        
         //-----------------------FIN YAVUZ------------//
         request.getRequestDispatcher(url).include(request, response);
 

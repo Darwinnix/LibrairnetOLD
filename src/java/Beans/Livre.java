@@ -624,7 +624,7 @@ public class Livre implements Serializable {
 
     private ArrayList<Critique> getCritique(Connexion con) {
         critiques = new ArrayList();
-        String query = "SELECT * FROM Critique WHERE livIsbn = '" + isbn + "'";
+        String query = "SELECT * FROM Critique JOIN Client ON Critique.cliId = Client.cliId WHERE Critique.livIsbn = '" + isbn + "'";
         Connection c = con.getConnection();
 
         Statement stmt;
@@ -632,12 +632,14 @@ public class Livre implements Serializable {
             stmt = c.createStatement();
             ResultSet rs = stmt.executeQuery(query);
             while (rs.next()) {
-                critiques.add(new Critique(rs.getString("criCommentaire"), rs.getInt("criNote")));
+                critiques.add(new Critique(rs.getString("criCommentaire"), 
+                        rs.getInt("criNote"),
+                        rs.getString("cliNom") +" "+rs.getString("cliPrenom")));
             }
             rs.close();
             stmt.close();
         } catch (SQLException ex) {
-            Logger.getLogger(Livre.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("Critique : "+ex.getMessage());;
         } finally {
             try {
                 c.close();
