@@ -181,5 +181,10 @@ public class Search implements Serializable{
         query = sb.toString();
         return query;
     }
+    
+    public Livre getLivre(String isbn){
+        Livre leLivre = this.search.get(isbn);
+        return leLivre;
+    }
 
 }
